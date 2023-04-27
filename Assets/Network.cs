@@ -38,23 +38,21 @@ public class Network : MonoBehaviour
         };
 
         
-            socket.On("spawn", (response) =>
+        socket.On("spawn", (response) =>
+        {
+            try {
+            Debug.Log("spawn begin");
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                try {
-                Debug.Log("spawn begin");
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                {
-                    Instantiate(playerPrefab);
-                });
-                Debug.Log("spawn end");
-                } catch(Exception e)
-                {
-                    Debug.Log(e);
-                }
+                Instantiate(playerPrefab);
             });
+            Debug.Log("spawn end");
+            } catch(Exception e)
+            {
+                Debug.Log(e);
+            }
+        }); 
      
-       
-
         socket.OnPing += (sender, e) =>
         {
             Debug.Log("Ping");
