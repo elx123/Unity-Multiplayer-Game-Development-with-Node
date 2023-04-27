@@ -31,7 +31,14 @@ public class Network : MonoBehaviour
         socket.OnConnected += (sender, e) =>
         {
             Debug.Log("socket.OnConnected");
+            socket.Emit("move");
         };
+
+        socket.On("spawn", (response) =>
+        {
+            Debug.Log("spawn");
+        });
+
         socket.OnPing += (sender, e) =>
         {
             Debug.Log("Ping");
