@@ -13,8 +13,8 @@ public class NavigatePosition : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void NevigateTo(Vector3 position)
     {
-        agent.SetDestination(Vector3.zero);
+        agent.SetDestination (position);
     }
 }
