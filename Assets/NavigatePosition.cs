@@ -17,4 +17,9 @@ public class NavigatePosition : MonoBehaviour
     {
         agent.SetDestination (position);
     }
+
+    void Update()
+    {
+        GetComponent<Animator>().SetFloat("Distance",agent.remainingDistance);
+    }
 }
