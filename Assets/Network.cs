@@ -53,6 +53,17 @@ public class Network : MonoBehaviour
                 Debug.Log(e);
             }
         }); 
+
+        socket.On("move",(data) =>
+        {
+            try {
+                    Debug.Log("player is moving" + data.ToString());
+                    
+            } catch(Exception e)
+            {
+                Debug.Log(e);
+            }
+        });
      /*
         socket.OnPing += (sender, e) =>
         {
