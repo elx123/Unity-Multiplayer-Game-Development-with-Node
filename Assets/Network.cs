@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 public class Network : MonoBehaviour
 {
-    static SocketIOUnity socket;    // Start is called before the first frame update
+    public SocketIOUnity socket;    // Start is called before the first frame update
     
     public GameObject playerPrefab;
     
@@ -34,7 +34,6 @@ public class Network : MonoBehaviour
         socket.OnConnected += (sender, e) =>
         {
             Debug.Log("socket.OnConnected");
-            socket.Emit("move");
         };
 
         
@@ -42,17 +41,19 @@ public class Network : MonoBehaviour
         {
             try {
             Debug.Log("spawn begin");
+            /*
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
                 Instantiate(playerPrefab);
             });
+            */
             Debug.Log("spawn end");
             } catch(Exception e)
             {
                 Debug.Log(e);
             }
         }); 
-     
+     /*
         socket.OnPing += (sender, e) =>
         {
             Debug.Log("Ping");
@@ -61,6 +62,7 @@ public class Network : MonoBehaviour
         {
             Debug.Log("Pong: " + e.TotalMilliseconds);
         };
+        */
         socket.OnDisconnected += (sender, e) =>
         {
             Debug.Log("disconnect: " + e);

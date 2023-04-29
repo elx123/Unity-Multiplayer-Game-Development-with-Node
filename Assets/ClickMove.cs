@@ -5,15 +5,13 @@ using UnityEngine;
 public class ClickMove : MonoBehaviour
 {
     public GameObject player;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void OnClick(Vector3 postion)
     {
         var navPos = player.GetComponent<NavigatePosition>();
+        var netMove = player.GetComponent<NetworkMove> ();
+        
         navPos.NevigateTo(postion);
+        netMove.OnMove(postion);
     }
 }
