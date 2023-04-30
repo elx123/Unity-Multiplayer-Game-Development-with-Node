@@ -50,7 +50,7 @@ public class Network : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("1");
+        players = new Dictionary<string,GameObject>();
         var uri = new Uri("http://localhost:3000");
         socket = new SocketIOUnity(uri, new SocketIOOptions
         {
@@ -79,16 +79,17 @@ public class Network : MonoBehaviour
                     Debug.Log("spawn begin" + response.ToString());
                     List<DataItem> result = ParseJson(response.ToString());
                     Debug.Log(result.Count);
-                    foreach (DataItem item in result)  //T的类型与mList声明时一样
+
+                    if (result.Count == 0)
                     {
-                        Debug.Log("ID: " + item.id);
+                        return;
                     }
-                    
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
-                        Instantiate(playerPrefab);
+                        GameObject playertemp = Instantiate(playerPrefab);
+                        players.Add(result[0].id,playertemp);
+                        Debug.Log(players.Count);
                     });
-                    
                     Debug.Log("spawn end");
             } catch(Exception e)
             {
