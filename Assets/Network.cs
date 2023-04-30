@@ -35,7 +35,7 @@ public class Network : MonoBehaviour
     
     Dictionary<string,GameObject> players;
 
-         void ParseJson(string json)
+    List<DataItem> ParseJson(string json)
     {
         List<DataItem> dataItems = new List<DataItem>();
         DataItem[] dataArray = JsonHelper.FromJson<DataItem>(json);
@@ -45,6 +45,7 @@ public class Network : MonoBehaviour
             dataItems.Add(item);
             Debug.Log("ID: " + item.id);
         }
+        return dataItems;
     }
 
     void Start()
@@ -76,14 +77,18 @@ public class Network : MonoBehaviour
         {
             try {
                     Debug.Log("spawn begin" + response.ToString());
-                    Debug.Log("spawn beginasdfafdsaf");
-                    ParseJson(response.ToString());
-                    /*
+                    List<DataItem> result = ParseJson(response.ToString());
+                    Debug.Log(result.Count);
+                    foreach (DataItem item in result)  //T的类型与mList声明时一样
+                    {
+                        Debug.Log("ID: " + item.id);
+                    }
+                    
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
                         Instantiate(playerPrefab);
                     });
-                    */
+                    
                     Debug.Log("spawn end");
             } catch(Exception e)
             {
