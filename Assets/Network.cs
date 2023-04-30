@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using SocketIOClient;
 using SocketIOClient.Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.UI;
-using Newtonsoft.Json.Linq;
+
+public class Player{
+       public string id;
+    }
+
+    public class PlayerList
+{
+    public Player[] Players;
+}
 
 public class Network : MonoBehaviour
 {
@@ -12,6 +19,8 @@ public class Network : MonoBehaviour
     
     public GameObject playerPrefab;
     
+    Dictionary<string,GameObject> players;
+
     void Start()
     {
         Debug.Log("1");
@@ -40,14 +49,15 @@ public class Network : MonoBehaviour
         socket.On("spawn", (response) =>
         {
             try {
-            Debug.Log("spawn begin");
-            /*
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                Instantiate(playerPrefab);
-            });
-            */
-            Debug.Log("spawn end");
+                    Debug.Log("spawn begin" + response.ToString());
+                    
+                    /*
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        Instantiate(playerPrefab);
+                    });
+                    */
+                    Debug.Log("spawn end");
             } catch(Exception e)
             {
                 Debug.Log(e);
@@ -63,6 +73,11 @@ public class Network : MonoBehaviour
             {
                 Debug.Log(e);
             }
+        });
+
+        socket.On("registered", (data) =>
+        {
+            Debug.Log(data);
         });
      /*
         socket.OnPing += (sender, e) =>
