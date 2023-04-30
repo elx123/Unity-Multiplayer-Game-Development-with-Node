@@ -4,13 +4,27 @@ using SocketIOClient;
 using SocketIOClient.Newtonsoft.Json;
 using UnityEngine;
 
-public class Player{
-       public string id;
+
+[System.Serializable]
+public class DataItem
+{
+    public string id;
+}
+
+public static class JsonHelper
+{
+    public static T[] FromJson<T>(string json)
+    {
+        string newJson = "{ \"Items\": " + json + "}";
+        Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJson);
+        return wrapper.Items;
     }
 
-    public class PlayerList
-{
-    public Player[] Players;
+    [System.Serializable]
+    private class Wrapper<T>
+    {
+        public T[] Items;
+    }
 }
 
 public class Network : MonoBehaviour
@@ -20,6 +34,18 @@ public class Network : MonoBehaviour
     public GameObject playerPrefab;
     
     Dictionary<string,GameObject> players;
+
+         void ParseJson(string json)
+    {
+        List<DataItem> dataItems = new List<DataItem>();
+        DataItem[] dataArray = JsonHelper.FromJson<DataItem>(json);
+
+        foreach (DataItem item in dataArray)
+        {
+            dataItems.Add(item);
+            Debug.Log("ID: " + item.id);
+        }
+    }
 
     void Start()
     {
@@ -50,7 +76,8 @@ public class Network : MonoBehaviour
         {
             try {
                     Debug.Log("spawn begin" + response.ToString());
-                    
+                    Debug.Log("spawn beginasdfafdsaf");
+                    ParseJson(response.ToString());
                     /*
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
