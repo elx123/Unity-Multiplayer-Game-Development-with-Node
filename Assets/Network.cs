@@ -150,6 +150,30 @@ public class Network : MonoBehaviour
         {
             Debug.Log(data);
         });
+
+        socket.On("disconnected", (response) =>
+        {
+            try {
+                Debug.Log("client disconnected" + response.ToString());
+                List<DataItem> result = ParseJson(response.ToString());
+                if (result.Count == 0)
+                {
+                    return;
+                }
+                var player = players[result[0].id];
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    Destroy (player);
+                    players.Remove(result[0].id);
+                });
+                
+            }catch(Exception e)
+            {
+                Debug.Log(e);
+            }
+            
+        });
+        
      /*
         socket.OnPing += (sender, e) =>
         {
