@@ -11,6 +11,14 @@ public class DataItem
     public string id;
 }
 
+[System.Serializable]
+public class PlayerPostion
+{
+    public string id;
+    public float x;
+    public float y;
+}
+
 public static class JsonHelper
 {
     public static T[] FromJson<T>(string json)
@@ -43,7 +51,20 @@ public class Network : MonoBehaviour
         foreach (DataItem item in dataArray)
         {
             dataItems.Add(item);
-            Debug.Log("ID: " + item.id);
+            //Debug.Log("ID: " + item.id);
+        }
+        return dataItems;
+    }
+
+    List<PlayerPostion> ParseJsonPostion(string json)
+    {
+        List<PlayerPostion> dataItems = new List<PlayerPostion>();
+        PlayerPostion[] dataArray = JsonHelper.FromJson<PlayerPostion>(json);
+
+        foreach (PlayerPostion item in dataArray)
+        {
+            dataItems.Add(item);
+            //Debug.Log("ID: " + item.id);
         }
         return dataItems;
     }
@@ -101,7 +122,24 @@ public class Network : MonoBehaviour
         {
             try {
                     Debug.Log("player is moving" + data.ToString());
-                    
+                    List<PlayerPostion> result = ParseJsonPostion(data.ToString());
+                     if (result.Count == 0)
+                    {
+                        return;
+                    }
+                    var playerId = result[0].id;
+                    var pos = new Vector3(result[0].x,0,result[0].y);
+                    Debug.Log("pos: "+pos);
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        var playerInstance = players[playerId];
+                        if (playerInstance != null) {
+                            Debug.Log(playerInstance.name);
+                        }
+                        var navPostion = playerInstance.GetComponent<NavigatePosition>();
+                        navPostion.NevigateTo(pos);
+                    });
+
             } catch(Exception e)
             {
                 Debug.Log(e);
