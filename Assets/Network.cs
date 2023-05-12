@@ -4,10 +4,6 @@ using SocketIOClient;
 using SocketIOClient.Newtonsoft.Json;
 using UnityEngine;
 
-struct PostionVector{
-       public float x,y;
-    }
-
 [System.Serializable]
 public class DataItem
 {
@@ -161,13 +157,13 @@ public class Network : MonoBehaviour
             try {
                 
                 Debug.Log("server is requesting postion");
-                PostionVector postion;
+                PlayerPostion postion = new PlayerPostion();
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
                     postion.x = myPlayer.transform.position.x;
                     postion.y = myPlayer.transform.position.z;
                     var result = JsonUtility.ToJson(postion);
-                    socket.Emit("updatePosition", result);
+                    socket.EmitStringAsJSON("updatePosition", result);
                     //socket.EmitStringAsJSON("updatePosition", response.ToString());
                 });
                 
@@ -177,9 +173,30 @@ public class Network : MonoBehaviour
             }
         });
 
-        socket.On("updatePosition",(response) =>
+        socket.On("updatePosition",(data) =>
         {
-            Debug.Log("updatePosition" + response.ToString());
+            try {
+
+                Debug.Log("updatePosition" + data.ToString());
+                List<PlayerPostion> result = ParseJsonPostion(data.ToString());
+                if (result.Count == 0)
+                {
+                    return;
+                }
+                var playerId = result[0].id;
+                var player = players[playerId];
+                //player.transform.position
+                var pos = new Vector3(result[0].x,0,result[0].y);
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    player.transform.position = pos;
+                }); 
+
+            }catch(Exception e)
+            {
+                Debug.Log(e);
+            }
+            
         });
 
         socket.On("disconnected", (response) =>
