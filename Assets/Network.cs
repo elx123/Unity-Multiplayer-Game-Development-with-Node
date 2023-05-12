@@ -4,6 +4,9 @@ using SocketIOClient;
 using SocketIOClient.Newtonsoft.Json;
 using UnityEngine;
 
+struct PostionVector{
+       public float x,y;
+    }
 
 [System.Serializable]
 public class DataItem
@@ -101,7 +104,7 @@ public class Network : MonoBehaviour
             try {
                     Debug.Log("spawn begin" + response.ToString());
                     List<DataItem> result = ParseJson(response.ToString());
-                    //Debug.Log(result.Count);
+//                    Debug.Log(players);
 
                     if (result.Count == 0)
                     {
@@ -153,6 +156,32 @@ public class Network : MonoBehaviour
             Debug.Log(data);
         });
 
+        socket.On("requestPosition", (response) =>
+        {
+            try {
+                
+                Debug.Log("server is requesting postion");
+                PostionVector postion;
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    postion.x = myPlayer.transform.position.x;
+                    postion.y = myPlayer.transform.position.z;
+                    var result = JsonUtility.ToJson(postion);
+                    socket.Emit("updatePosition", result);
+                    //socket.EmitStringAsJSON("updatePosition", response.ToString());
+                });
+                
+            }catch(Exception e)
+            {
+                Debug.Log(e);
+            }
+        });
+
+        socket.On("updatePosition",(response) =>
+        {
+            Debug.Log("updatePosition" + response.ToString());
+        });
+
         socket.On("disconnected", (response) =>
         {
             try {
@@ -174,22 +203,6 @@ public class Network : MonoBehaviour
                 Debug.Log(e);
             }
             
-        });
-
-        socket.On("requestPosition", (response) =>
-        {
-            try {
-                
-                Debug.Log("server is requesting postion");
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                {
-                    socket.EmitStringAsJSON("updatePosition", myPlayer.transform.position.ToString());
-                });
-                
-            }catch(Exception e)
-            {
-                Debug.Log(e);
-            }
         });
         
      /*
