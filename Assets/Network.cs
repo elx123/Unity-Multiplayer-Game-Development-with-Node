@@ -110,9 +110,10 @@ public class Network : MonoBehaviour
                     {
                         GameObject playertemp = Instantiate(playerPrefab);
                         players.Add(result[0].id,playertemp);
+                        Debug.Log("spawn end");
+                        Debug.Log("spawn end"+players.Count);
                         //Debug.Log(players.Count);
                     });
-                    Debug.Log("spawn end");
             } catch(Exception e)
             {
                 Debug.Log(e);
@@ -154,6 +155,7 @@ public class Network : MonoBehaviour
 
         socket.On("requestPosition", (response) =>
         {
+            
             try {
                 
                 Debug.Log("server is requesting postion");
@@ -171,6 +173,7 @@ public class Network : MonoBehaviour
             {
                 Debug.Log(e);
             }
+            
         });
 
         socket.On("updatePosition",(data) =>
@@ -184,14 +187,26 @@ public class Network : MonoBehaviour
                     return;
                 }
                 var playerId = result[0].id;
-                var player = players[playerId];
-                Debug.Log(players);
-                Debug.Log(playerId);
-                var pos = new Vector3(result[0].x,0,result[0].y);
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                Debug.Log("updatePosition1"+playerId);
+                
+                Debug.Log("updatePosition2"+players.Count);
+
+                Debug.Log("updatePosition3"+players.Keys);
+
+                if (players.ContainsKey(playerId))
                 {
-                    player.transform.position = pos;
-                }); 
+                    var player = players[playerId];
+                      //var player = players[playerId];
+                    var pos = new Vector3(result[0].x,0,result[0].y);
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        player.transform.position = pos;
+                    }); 
+                }
+                else
+                {
+                    Debug.Log(playerId+"offline");
+                }
 
             }catch(Exception e)
             {
