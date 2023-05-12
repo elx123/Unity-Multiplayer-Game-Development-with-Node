@@ -185,7 +185,8 @@ public class Network : MonoBehaviour
                 }
                 var playerId = result[0].id;
                 var player = players[playerId];
-                //player.transform.position
+                Debug.Log(players);
+                Debug.Log(playerId);
                 var pos = new Vector3(result[0].x,0,result[0].y);
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
