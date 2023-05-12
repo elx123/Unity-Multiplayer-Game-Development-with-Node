@@ -40,6 +40,8 @@ public class Network : MonoBehaviour
     public SocketIOUnity socket;    // Start is called before the first frame update
     
     public GameObject playerPrefab;
+
+    public GameObject myPlayer;
     
     Dictionary<string,GameObject> players;
 
@@ -99,7 +101,7 @@ public class Network : MonoBehaviour
             try {
                     Debug.Log("spawn begin" + response.ToString());
                     List<DataItem> result = ParseJson(response.ToString());
-                    Debug.Log(result.Count);
+                    //Debug.Log(result.Count);
 
                     if (result.Count == 0)
                     {
@@ -109,7 +111,7 @@ public class Network : MonoBehaviour
                     {
                         GameObject playertemp = Instantiate(playerPrefab);
                         players.Add(result[0].id,playertemp);
-                        Debug.Log(players.Count);
+                        //Debug.Log(players.Count);
                     });
                     Debug.Log("spawn end");
             } catch(Exception e)
@@ -172,6 +174,22 @@ public class Network : MonoBehaviour
                 Debug.Log(e);
             }
             
+        });
+
+        socket.On("requestPosition", (response) =>
+        {
+            try {
+                
+                Debug.Log("server is requesting postion");
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    socket.EmitStringAsJSON("updatePosition", myPlayer.transform.position.ToString());
+                });
+                
+            }catch(Exception e)
+            {
+                Debug.Log(e);
+            }
         });
         
      /*

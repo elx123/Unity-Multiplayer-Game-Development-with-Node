@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 1045222401663307547, guid: a0c3f02a5e73d4d41a9ee56be3d7aeeb, type: 3}
+  myPlayer: {fileID: 1936867911}
 --- !u!4 &452605931
 Transform:
   m_ObjectHideFlags: 0
@@ -546,7 +547,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1045222401663307547, guid: a0c3f02a5e73d4d41a9ee56be3d7aeeb, type: 3}
       propertyPath: m_Name
-      value: Player
+      value: MyPlayer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0c3f02a5e73d4d41a9ee56be3d7aeeb, type: 3}
